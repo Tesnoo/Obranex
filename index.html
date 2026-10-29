@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Projects</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #9e9e9e;
+            --accent: #bb86fc;
+            --hover-bg: #2c2c2c;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--card-bg);
+            padding-bottom: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.2s, background-color 0.2s;
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            background-color: var(--hover-bg);
+        }
+
+        .card h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            color: var(--accent);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 0 1.5rem 0;
+            flex-grow: 1;
+        }
+
+        .tags {
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background-color: #333;
+            color: #ccc;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            margin-right: 0.5rem;
+        }
+
+        .card a {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--bg-color);
+            background-color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            transition: opacity 0.2s;
+        }
+
+        .card a:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>My Web Projects</h1>
+    
+    <div class="grid">
+        <!-- プロジェクト1 -->
+        <div class="card">
+            <h2>MTPR Web Interface</h2>
+            <div class="tags">
+                <span class="tag">HTML/CSS/JS</span>
+                <span class="tag">UI/UX</span>
+            </div>
+            <p>Main Tournament Power Rankingのキャラクターデータ取得やUI要素、検索機能を実装したWebページ。</p>
+            <a href="https://example.com/mtpr" target="_blank">開く</a>
+        </div>
+
+        <!-- プロジェクト2 -->
+        <div class="card">
+            <h2>start.gg Rank Tracker</h2>
+            <div class="tags">
+                <span class="tag">API</span>
+                <span class="tag">Tool</span>
+            </div>
+            <p>start.ggのAPIを連携して大会のランキングデータをトラッキング・可視化するためのツール。</p>
+            <a href="http://localhost:3000" target="_blank">開く</a>
+        </div>
+
+        <!-- プロジェクト3 -->
+        <div class="card">
+            <h2>Console Manager Dashboard</h2>
+            <div class="tags">
+                <span class="tag">Discord Bot</span>
+                <span class="tag">Utility</span>
+            </div>
+            <p>Discord bot (Console Manager) の設定やステータスをブラウザから確認するためのローカルダッシュボード。</p>
+            <a href="../console-manager/index.html" target="_blank">開く</a>
+        </div>
+        
+        <!-- 新しいプロジェクトを追加する場合はここをコピー -->
+        <div class="card">
+            <h2>新しいプロジェクト</h2>
+            <div class="tags">
+                <span class="tag">タグ1</span>
+            </div>
+            <p>プロジェクトの簡単な説明をここに記述します。</p>
+            <a href="#" target="_blank">開く</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
