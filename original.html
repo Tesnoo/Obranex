@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Obranex</title>
-    <link id="page-favicon" rel="icon" href="./Obranex_logo.png">
+
+    <!-- Discord / SNS 埋め込み用 OGP設定 -->
+    <meta property="og:title" content="Obranex">
+    <meta property="og:description" content="Tesnoo Personal Web Applications & Tools Nexus">
+    <meta property="og:url" content="https://obranex.pages.dev/">
+    <meta property="og:image" content="https://obranex.pages.dev/Obranex_logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Obranex">
+    <meta name="theme-color" content="#fd0083">
+    <meta name="twitter:card" content="summary">
+
+    <link id="page-favicon" rel="icon" href="https://obranex.pages.dev/Obranex_logo.png">
     <style>
         :root {
             --bg-color: #0b0c14;
@@ -46,45 +57,38 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1.25rem;
             margin-bottom: 2.5rem;
-            padding-bottom: 1.25rem;
+            padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--border-color);
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
         }
 
         .brand-logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
             object-fit: cover;
-            box-shadow: 0 0 16px rgba(253, 0, 131, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 0 20px rgba(253, 0, 131, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             background: #10121d;
             flex-shrink: 0;
         }
 
         .brand-text h1 {
-            font-size: 1.9rem;
-            font-weight: 800;
+            font-size: 2.75rem;
+            font-weight: 900;
             margin: 0;
-            letter-spacing: 0.6px;
+            letter-spacing: 1px;
             background: linear-gradient(135deg, #ffffff 0%, #f0abfc 50%, var(--accent-cyan) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            line-height: 1.2;
-        }
-
-        .brand-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin: 2px 0 0 0;
-            letter-spacing: 0.4px;
+            line-height: 1.1;
         }
 
         .header-actions {
@@ -123,6 +127,17 @@
         .action-btn.primary:hover {
             opacity: 0.92;
             box-shadow: 0 4px 12px rgba(253, 0, 131, 0.35);
+        }
+
+        .action-btn.cyan {
+            background: linear-gradient(135deg, #0ea5e9, #14b8a6);
+            border: none;
+            color: #fff;
+        }
+
+        .action-btn.cyan:hover {
+            opacity: 0.92;
+            box-shadow: 0 4px 12px rgba(102, 252, 241, 0.3);
         }
 
         /* カードグリッド */
@@ -418,7 +433,8 @@
 
         @media (max-width: 600px) {
             body { padding: 1.25rem 1rem 3rem; }
-            .brand-text h1 { font-size: 1.5rem; }
+            .brand-logo { width: 52px; height: 52px; }
+            .brand-text h1 { font-size: 2.1rem; }
             .header-actions { width: 100%; }
             .action-btn { flex: 1; justify-content: center; font-size: 0.8rem; padding: 0.5rem 0.6rem; }
         }
@@ -432,13 +448,13 @@
             <img id="site-logo-img" class="brand-logo" src="./Obranex_logo.png" alt="Obranex Logo">
             <div class="brand-text">
                 <h1 id="site-name-display">Obranex</h1>
-                <p id="site-sub-display" class="brand-subtitle">Personal Works Nexus</p>
             </div>
         </div>
         <div class="header-actions">
             <button class="action-btn" onclick="openAppModal(-1)">＋ アプリ追加</button>
             <button class="action-btn" onclick="openSiteModal()">⚙️ サイト設定</button>
-            <button class="action-btn primary" onclick="exportUpdatedHtml()" title="編集内容を埋め込んだHTMLをダウンロードします">💾 HTML書き出し</button>
+            <button class="action-btn" onclick="exportUpdatedHtml()" title="編集内容を埋め込んだ原本(original.html)をダウンロードします">💾 原本HTML書き出し</button>
+            <button class="action-btn primary" onclick="exportEncryptedIndexHtml()" title="Discord埋め込みタグを維持したまま暗号化した index.html を直接書き出します">🔒 暗号化 index.html 書き出し</button>
         </div>
     </header>
 
@@ -501,10 +517,6 @@
             <input type="text" id="site-name-input" placeholder="Obranex">
         </div>
         <div class="form-group">
-            <label>サブタイトル</label>
-            <input type="text" id="site-sub-input" placeholder="Personal Works Nexus">
-        </div>
-        <div class="form-group">
             <label>サイトアイコンURL（デフォルト: ./Obranex_logo.png）</label>
             <input type="text" id="site-logo-input" placeholder="./Obranex_logo.png">
         </div>
@@ -523,66 +535,92 @@
 <script id="portal-data-script">
 // ▼ 初期データ（HTML書き出し時にここが最新の編集内容で自動更新されます）
 const DEFAULT_PORTAL_DATA = {
-    siteName: "Obranex",
-    siteSubtitle: "Personal Works Nexus",
-    siteLogo: "./Obranex_logo.png",
-    apps: [
+    "siteName": "Obranex",
+    "siteLogo": "./Obranex_logo.png",
+    "apps": [
         {
-            name: "WSP-MTPR",
-            desc: "スマパメイントーナメントのPower Ranking＆シード作成システム。start.ggやSupermajor、スプレッドシートと連携し、ランキング集計やStation割り振りを自動化。",
-            tags: ["start.gg API", "GAS", "Supermajor"],
-            url: "https://tesnoo.github.io/WSP-MTPR/",
-            icon: "https://tesnoo.github.io/WSP-MTPR/sumapa_newlogo.png",
-            color: "#45a29e"
+            "name": "WSP-MTPR",
+            "desc": "スマパメイントーナメントのPower Ranking＆シード作成システム。start.ggやSupermajor、スプレッドシートと連携し、ランキング集計やStation割り振りを自動化。",
+            "tags": [
+                "start.gg API",
+                "GAS",
+                "Supermajor"
+            ],
+            "url": "https://tesnoo.github.io/WSP-MTPR/",
+            "icon": "https://i.imgur.com/KzIRE2f.png",
+            "color": "#49aca7"
         },
         {
-            name: "WSP-CTPR",
-            desc: "派生トーナメント向けのPower Ranking＆シード管理システム。MTPRと共通の設計基盤を持つ姉妹ツール。",
-            tags: ["start.gg API", "GAS"],
-            url: "https://tesnoo.github.io/WSP-CTPR/",
-            icon: "https://tesnoo.github.io/WSP-CTPR/sumapa_newlogo.png",
-            color: "#38bdf8"
+            "name": "WSP-CTPR",
+            "desc": "派生トーナメント向けのPower Ranking＆シード管理システム。MTPRと共通の設計基盤を持つ姉妹ツール。",
+            "tags": [
+                "start.gg API",
+                "GAS"
+            ],
+            "url": "https://tesnoo.github.io/WSP-CTPR/",
+            "icon": "https://i.imgur.com/EYGTG7J.png",
+            "color": "#eb4d97"
         },
         {
-            name: "FHSS",
-            desc: "Fly High!! Seeding System。東京のオフライン大会向けに、独自のアルゴリズムと大会Tier計算でシード順位・スコアを算出するシステム。",
-            tags: ["Seeding", "GAS", "start.gg API"],
-            url: "https://tesnoo.github.io/fhss/",
-            icon: "https://tesnoo.github.io/fhss/Flyhigh_logo.png",
-            color: "#FA8534"
+            "name": "FHSS",
+            "desc": "Fly High!! Seeding System。東京のオフライン大会向けに、独自のアルゴリズムと大会Tier計算でシード順位・スコアを算出するシステム。",
+            "tags": [
+                "Seeding",
+                "GAS",
+                "start.gg API"
+            ],
+            "url": "https://tesnoo.github.io/fhss/",
+            "icon": "https://tesnoo.github.io/fhss/Flyhigh_logo.png",
+            "color": "#FA8534"
         },
         {
-            name: "Bracket Printer",
-            desc: "start.ggのAPIやCSVデータから、オフライン大会用の進行トーナメント表・名簿（PDF / JPG）を高精度に自動生成する印刷支援ツール。",
-            tags: ["PDF / Print", "start.gg API", "Tournament"],
-            url: "https://tesnoo.github.io/BracketPrinter/",
-            icon: "https://raw.githubusercontent.com/Tesnoo/BracketPrinter/main/image/BracketPrinter_logo.png",
-            fallbackIcon: "https://tesnoo.github.io/BracketPrinter/image/BracketPrinter_logo.png",
-            color: "#DB2777"
+            "name": "Bracket Printer",
+            "desc": "start.ggのAPIやCSVデータから、オフライン大会用の進行トーナメント表・名簿（PDF / JPG）を高精度に自動生成する印刷支援ツール。",
+            "tags": [
+                "PDF / Print",
+                "start.gg API",
+                "Tournament"
+            ],
+            "url": "https://tesnoo.github.io/BracketPrinter/",
+            "icon": "https://raw.githubusercontent.com/Tesnoo/BracketPrinter/main/image/BracketPrinter_logo.png",
+            "fallbackIcon": "https://tesnoo.github.io/BracketPrinter/image/BracketPrinter_logo.png",
+            "color": "#DB2777"
         },
         {
-            name: "MuseDex",
-            desc: "Googleドライブやスプレッドシートと連携し、人物別アルバム・タグ絞り込み・R18ぼかし切り替え機能を備えたプライベートメディアギャラリー。",
-            tags: ["Gallery", "Google Drive", "GAS"],
-            url: "https://tesnoo.github.io/MuseDex/",
-            icon: "https://tesnoo.github.io/MuseDex/MuseDex_logo.png",
-            color: "#8b5cf6"
+            "name": "MuseDex",
+            "desc": "Googleドライブやスプレッドシートと連携し、人物別アルバム・タグ絞り込み・R18ぼかし切り替え機能を備えたプライベートメディアギャラリー。",
+            "tags": [
+                "Gallery",
+                "Google Drive",
+                "GAS"
+            ],
+            "url": "https://tesnoo.github.io/MuseDex/",
+            "icon": "https://tesnoo.github.io/MuseDex/MuseDex_logo.png",
+            "color": "#8b5cf6"
         },
         {
-            name: "Tronoches",
-            desc: "動画・マンガ・アニメ・音声作品（専用ASMRプレイヤー搭載）を一元管理し、シリーズ格納やタグ・キャスト絞り込みができる秘蔵メディアコレクション。",
-            tags: ["Private CMS", "Cloudflare R2", "Audio Player"],
-            url: "https://nsfw-phi.vercel.app/",
-            icon: "https://nsfw-phi.vercel.app/favicon.ico",
-            color: "#6366f1"
+            "name": "Tronoches",
+            "desc": "動画・マンガ・アニメ・音声作品（専用ASMRプレイヤー搭載）を一元管理し、シリーズ格納やタグ・キャスト絞り込みができる秘蔵メディアコレクション。",
+            "tags": [
+                "Private CMS",
+                "Cloudflare R2",
+                "Audio Player"
+            ],
+            "url": "https://nsfw-phi.vercel.app/",
+            "icon": "https://raw.githubusercontent.com/Tesnoo/Tronoches/refs/heads/main/logo.png?token=GHSAT0AAAAAAEPN2HG2Z6H3K7XPLMPYFGCK2XTDR5A",
+            "color": "#0c75e3"
         },
         {
-            name: "My家計簿",
-            desc: "現金・電子マネー・チャージ・換金・借金の推移を日付順ソートで自動再計算し、CSVインポートにも対応した個人用家計簿アプリ。",
-            tags: ["Finance", "SPA", "GAS"],
-            url: "https://tesnoo.github.io/my-kakeibo/",
-            icon: "",
-            color: "#fd0083"
+            "name": "My家計簿",
+            "desc": "現金・電子マネー・チャージ・換金・借金の推移を日付順ソートで自動再計算し、CSVインポートにも対応した個人用家計簿アプリ。",
+            "tags": [
+                "Finance",
+                "SPA",
+                "GAS"
+            ],
+            "url": "https://tesnoo.github.io/my-kakeibo/",
+            "icon": "",
+            "color": "#fd0083"
         }
     ]
 };
@@ -590,7 +628,6 @@ const DEFAULT_PORTAL_DATA = {
 
 <script>
 const STORAGE_KEY = "obranex_portal_data_v1";
-// Obranex（O＋X Nexus）モチーフの内蔵SVGロゴ（画像未配置時のフォールバック用）
 const DEFAULT_SVG_LOGO = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c14'/><polygon points='50,8 88,28 88,72 50,92 12,72 12,28' fill='none' stroke='%23fd0083' stroke-width='6'/><circle cx='50' cy='50' r='26' fill='none' stroke='%2366fcf1' stroke-width='5'/><path d='M34 34 L66 66 M66 34 L34 66' stroke='%23fd0083' stroke-width='6' stroke-linecap='round'/><circle cx='50' cy='50' r='7' fill='%2366fcf1'/></svg>";
 
 let portalData = loadPortalData();
@@ -617,7 +654,7 @@ function showToast(msg) {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 2000);
+    setTimeout(() => t.classList.remove("show"), 2200);
 }
 
 function escapeHtml(str) {
@@ -639,12 +676,10 @@ function handleIconError(imgEl, fallbackUrl, appName) {
 
 function renderPortal() {
     const siteName = portalData.siteName || "Obranex";
-    const siteSub = portalData.siteSubtitle || "";
     const logoUrl = portalData.siteLogo || DEFAULT_SVG_LOGO;
 
     document.getElementById("page-title").textContent = siteName;
     document.getElementById("site-name-display").textContent = siteName;
-    document.getElementById("site-sub-display").textContent = siteSub;
 
     const favicon = document.getElementById("page-favicon");
     const logoImg = document.getElementById("site-logo-img");
@@ -744,7 +779,6 @@ function deleteCurrentApp() {
 
 function openSiteModal() {
     document.getElementById("site-name-input").value = portalData.siteName || "";
-    document.getElementById("site-sub-input").value = portalData.siteSubtitle || "";
     document.getElementById("site-logo-input").value = portalData.siteLogo || "";
     document.getElementById("site-modal").classList.add("show");
 }
@@ -755,7 +789,6 @@ function closeSiteModal() {
 
 function saveSiteModal() {
     portalData.siteName = document.getElementById("site-name-input").value.trim() || "Obranex";
-    portalData.siteSubtitle = document.getElementById("site-sub-input").value.trim();
     portalData.siteLogo = document.getElementById("site-logo-input").value.trim();
     closeSiteModal();
     savePortalData();
@@ -770,14 +803,17 @@ function resetToDefaultData() {
     showToast("🔄 初期状態に戻しました");
 }
 
-function exportUpdatedHtml() {
+function buildUpdatedPlainHtml() {
     const jsonStr = JSON.stringify(portalData, null, 4);
     const currentDoc = document.documentElement.outerHTML;
-    const updatedHtml = "<!DOCTYPE html>\n" + currentDoc.replace(
+    return "<!DOCTYPE html>\n" + currentDoc.replace(
         /<script id="portal-data-script">[\s\S]*?<\/script>/,
         `<script id="portal-data-script">\n// ▼ 初期データ（HTML書き出し時にここが最新の編集内容で自動更新されます）\nconst DEFAULT_PORTAL_DATA = ${jsonStr};\n<\/script>`
     );
+}
 
+function exportUpdatedHtml() {
+    const updatedHtml = buildUpdatedPlainHtml();
     const blob = new Blob([updatedHtml], { type: "text/html;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -785,6 +821,250 @@ function exportUpdatedHtml() {
     a.click();
     URL.revokeObjectURL(a.href);
     showToast("💾 最新版の original.html を書き出しました");
+}
+
+// ▼ DiscordのOGPタグとObranexアイコンを維持したままAES-256で暗号化した index.html を直接書き出す機能
+async function exportEncryptedIndexHtml() {
+    const password = prompt("暗号化パスワードを入力してください（空欄でキャンセル）：");
+    if (!password) return;
+
+    showToast("🔐 暗号化ファイルを生成中...");
+    await new Promise(r => setTimeout(r, 50));
+
+    try {
+        const plainHtml = buildUpdatedPlainHtml();
+        const enc = new TextEncoder();
+
+        const toHex = (buf) => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+        const saltBytes = crypto.getRandomValues(new Uint8Array(16));
+        const saltHex = toHex(saltBytes);
+        const ivBytes = crypto.getRandomValues(new Uint8Array(16));
+        const ivHex = toHex(ivBytes);
+
+        // PBKDF2 600,000 iterations (SHA-256)
+        const baseKey = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"]);
+        const keyBits = await crypto.subtle.deriveBits(
+            { name: "PBKDF2", hash: "SHA-256", iterations: 600000, salt: enc.encode(saltHex) },
+            baseKey,
+            256
+        );
+        const hashedPasswordHex = toHex(keyBits);
+        const rawKeyBytes = new Uint8Array(keyBits);
+
+        // AES-CBC 暗号化
+        const aesKey = await crypto.subtle.importKey("raw", rawKeyBytes, "AES-CBC", false, ["encrypt"]);
+        const cipherBuf = await crypto.subtle.encrypt({ name: "AES-CBC", iv: ivBytes }, aesKey, enc.encode(plainHtml));
+        const encryptedPayload = ivHex + toHex(cipherBuf);
+
+        // HMAC-SHA256 署名
+        const hmacKey = await crypto.subtle.importKey("raw", rawKeyBytes, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+        const sigBuf = await crypto.subtle.sign("HMAC", hmacKey, enc.encode(encryptedPayload));
+        const signedCiphertext = toHex(sigBuf) + encryptedPayload;
+
+        const siteName = escapeHtml(portalData.siteName || "Obranex");
+
+        const encryptedIndexHtml = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${siteName}</title>
+
+    <!-- Discord / SNS 埋め込み用 OGP設定（暗号化状態でもDiscordボットが読み取れるよう外側に配置） -->
+    <meta property="og:title" content="${siteName}">
+    <meta property="og:description" content="Tesnoo Personal Web Applications & Tools Nexus">
+    <meta property="og:url" content="https://obranex.pages.dev/">
+    <meta property="og:image" content="https://obranex.pages.dev/Obranex_logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="${siteName}">
+    <meta name="theme-color" content="#fd0083">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="https://obranex.pages.dev/Obranex_logo.png">
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0b0c14;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(253, 0, 131, 0.1) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(102, 252, 241, 0.08) 0%, transparent 45%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #f0f4f8;
+            padding: 1.5rem;
+        }
+        .auth-card {
+            background: #151824;
+            border: 1px solid #262b40;
+            border-top: 3px solid #fd0083;
+            border-radius: 16px;
+            padding: 2.25rem 2rem;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55);
+        }
+        .auth-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            object-fit: cover;
+            margin-bottom: 0.9rem;
+            box-shadow: 0 0 20px rgba(253, 0, 131, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0 0 1.5rem 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f0abfc 50%, #66fcf1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pw-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #262b40;
+            background: #0b0c14;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .pw-input:focus {
+            outline: none;
+            border-color: #fd0083;
+        }
+        .remember-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 1.25rem;
+            cursor: pointer;
+        }
+        .unlock-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #fd0083, #be185d);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .unlock-btn:hover { opacity: 0.9; }
+        .err-msg {
+            color: #f87171;
+            font-size: 0.85rem;
+            margin-top: 0.85rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-card">
+        <img class="auth-logo" src="./Obranex_logo.png" alt="${siteName}" onerror="this.style.display='none'">
+        <h1 class="auth-title">${siteName}</h1>
+        <form id="unlock-form">
+            <input id="pw-field" class="pw-input" type="password" placeholder="Password" autofocus>
+            <label class="remember-row">
+                <input id="remember-cb" type="checkbox" checked> ログイン状態を保持する
+            </label>
+            <button class="unlock-btn" type="submit">UNLOCK</button>
+            <div id="err-msg" class="err-msg">パスワードが正しくありません</div>
+        </form>
+    </div>
+    <script>
+        const PAYLOAD = "${signedCiphertext}";
+        const SALT = "${saltHex}";
+        const STORAGE_HASH_KEY = "obranex_staticrypt_hash_v1";
+
+        const fromHex = (hex) => {
+            const arr = new Uint8Array(hex.length / 2);
+            for (let i = 0; i < hex.length; i += 2) arr[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+            return arr;
+        };
+        const toHex = (buf) => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+
+        async function deriveHash(password) {
+            const enc = new TextEncoder();
+            const baseKey = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"]);
+            const bits = await crypto.subtle.deriveBits(
+                { name: "PBKDF2", hash: "SHA-256", iterations: 600000, salt: enc.encode(SALT) },
+                baseKey,
+                256
+            );
+            return toHex(bits);
+        }
+
+        async function tryUnlockWithHash(hashHex, saveRemember) {
+            try {
+                const enc = new TextEncoder();
+                const expectedHmac = PAYLOAD.substring(0, 64);
+                const encryptedPart = PAYLOAD.substring(64);
+                const keyBytes = fromHex(hashHex);
+
+                const hmacKey = await crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+                const sigBuf = await crypto.subtle.sign("HMAC", hmacKey, enc.encode(encryptedPart));
+                if (toHex(sigBuf) !== expectedHmac) return false;
+
+                const iv = fromHex(encryptedPart.substring(0, 32));
+                const cipherBytes = fromHex(encryptedPart.substring(32));
+                const aesKey = await crypto.subtle.importKey("raw", keyBytes, "AES-CBC", false, ["decrypt"]);
+                const plainBuf = await crypto.subtle.decrypt({ name: "AES-CBC", iv }, aesKey, cipherBytes);
+                const plainHtml = new TextDecoder().decode(plainBuf);
+
+                if (saveRemember) localStorage.setItem(STORAGE_HASH_KEY, hashHex);
+                document.open();
+                document.write(plainHtml);
+                document.close();
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", async () => {
+            const savedHash = localStorage.getItem(STORAGE_HASH_KEY);
+            if (savedHash) {
+                const ok = await tryUnlockWithHash(savedHash, false);
+                if (!ok) localStorage.removeItem(STORAGE_HASH_KEY);
+            }
+        });
+
+        document.getElementById("unlock-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            document.getElementById("err-msg").style.display = "none";
+            const pw = document.getElementById("pw-field").value;
+            const remember = document.getElementById("remember-cb").checked;
+            const hashHex = await deriveHash(pw);
+            const ok = await tryUnlockWithHash(hashHex, remember);
+            if (!ok) document.getElementById("err-msg").style.display = "block";
+        });
+    <\/script>
+</body>
+</html>`;
+
+        const blob = new Blob([encryptedIndexHtml], { type: "text/html;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "index.html";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showToast("🔒 暗号化済みの index.html を書き出しました！");
+    } catch (err) {
+        alert("暗号化エラー: " + err.message);
+    }
 }
 
 renderPortal();
