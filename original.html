@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Obranex</title>
+    <link id="page-favicon" rel="icon" href="./Obranex_logo.png">
+    <style>
+        :root {
+            --bg-color: #0b0c14;
+            --card-bg: #151824;
+            --card-hover: #1e2235;
+            --text-main: #f0f4f8;
+            --text-muted: #94a3b8;
+            --accent-pink: #fd0083;
+            --accent-cyan: #66fcf1;
+            --border-color: #262b40;
+            --modal-bg: rgba(11, 12, 20, 0.85);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(253, 0, 131, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(102, 252, 241, 0.06) 0%, transparent 40%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem 1.25rem 4rem;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        /* ヘッダー */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 0 16px rgba(253, 0, 131, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: #10121d;
+            flex-shrink: 0;
+        }
+
+        .brand-text h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: 0.6px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0abfc 50%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
+            letter-spacing: 0.4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.55rem 0.95rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent-pink);
+            background-color: var(--card-hover);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--accent-pink), #be185d);
+            border: none;
+            color: #fff;
+        }
+
+        .action-btn.primary:hover {
+            opacity: 0.92;
+            box-shadow: 0 4px 12px rgba(253, 0, 131, 0.35);
+        }
+
+        /* カードグリッド */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            padding: 1.4rem;
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--card-accent, var(--accent-pink));
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            background-color: var(--card-hover);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 0.9rem;
+            padding-right: 2rem;
+        }
+
+        .app-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .app-icon-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .app-icon-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #fff;
+            background: linear-gradient(135deg, var(--card-accent, var(--accent-pink)), #1e293b);
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .edit-card-btn {
+            position: absolute;
+            top: 1.1rem;
+            right: 1.1rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .edit-card-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border-color: var(--border-color);
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .tag {
+            background-color: rgba(255, 255, 255, 0.06);
+            color: #cbd5e1;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin: 0 0 1.4rem 0;
+            flex-grow: 1;
+            white-space: pre-wrap;
+        }
+
+        .open-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: #fff;
+            background-color: var(--card-accent, var(--accent-pink));
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: center;
+            transition: opacity 0.2s, transform 0.15s;
+            margin-top: auto;
+        }
+
+        .open-btn:hover {
+            opacity: 0.88;
+        }
+
+        /* モーダル */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--modal-bg);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-pink);
+        }
+
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .color-row input[type="color"] {
+            width: 44px;
+            height: 38px;
+            padding: 2px;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-actions-right {
+            display: flex;
+            gap: 0.6rem;
+            margin-left: auto;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.55rem 0.9rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: #10b981;
+            color: #fff;
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: all 0.25s;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1.25rem 1rem 3rem; }
+            .brand-text h1 { font-size: 1.5rem; }
+            .header-actions { width: 100%; }
+            .action-btn { flex: 1; justify-content: center; font-size: 0.8rem; padding: 0.5rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="brand">
+            <img id="site-logo-img" class="brand-logo" src="./Obranex_logo.png" alt="Obranex Logo">
+            <div class="brand-text">
+                <h1 id="site-name-display">Obranex</h1>
+                <p id="site-sub-display" class="brand-subtitle">Personal Works Nexus</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="action-btn" onclick="openAppModal(-1)">＋ アプリ追加</button>
+            <button class="action-btn" onclick="openSiteModal()">⚙️ サイト設定</button>
+            <button class="action-btn primary" onclick="exportUpdatedHtml()" title="編集内容を埋め込んだHTMLをダウンロードします">💾 HTML書き出し</button>
+        </div>
+    </header>
+
+    <div id="app-grid" class="grid"></div>
+</div>
+
+<!-- アプリ編集・追加モーダル -->
+<div id="app-modal" class="modal-overlay" onclick="if(event.target===this) closeAppModal()">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="app-modal-title">アプリ情報の編集</h3>
+            <button class="close-btn" onclick="closeAppModal()">×</button>
+        </div>
+        <div class="form-group">
+            <label>アプリ名</label>
+            <input type="text" id="edit-name" placeholder="例: WSP-MTPR">
+        </div>
+        <div class="form-group">
+            <label>説明文</label>
+            <textarea id="edit-desc" placeholder="アプリの説明を入力..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>タグ（カンマ区切り）</label>
+            <input type="text" id="edit-tags" placeholder="例: start.gg API, GAS">
+        </div>
+        <div class="form-group">
+            <label>URL</label>
+            <input type="url" id="edit-url" placeholder="https://...">
+        </div>
+        <div class="form-group">
+            <label>アイコン画像URL（空欄時は頭文字アイコン）</label>
+            <input type="text" id="edit-icon" placeholder="https://.../logo.png">
+        </div>
+        <div class="form-group">
+            <label>テーマカラー（枠線＆ボタン色）</label>
+            <div class="color-row">
+                <input type="color" id="edit-color-picker" oninput="document.getElementById('edit-color').value = this.value">
+                <input type="text" id="edit-color" placeholder="#fd0083" oninput="document.getElementById('edit-color-picker').value = this.value">
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button id="delete-app-btn" class="btn-danger" onclick="deleteCurrentApp()">🗑️ 削除</button>
+            <div class="modal-actions-right">
+                <button class="action-btn" onclick="closeAppModal()">キャンセル</button>
+                <button class="action-btn primary" onclick="saveAppModal()">保存する</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- サイト設定モーダル -->
+<div id="site-modal" class="modal-overlay" onclick="if(event.target===this) closeSiteModal()">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>サイト全体の設定</h3>
+            <button class="close-btn" onclick="closeSiteModal()">×</button>
+        </div>
+        <div class="form-group">
+            <label>ポータルサイト名</label>
+            <input type="text" id="site-name-input" placeholder="Obranex">
+        </div>
+        <div class="form-group">
+            <label>サブタイトル</label>
+            <input type="text" id="site-sub-input" placeholder="Personal Works Nexus">
+        </div>
+        <div class="form-group">
+            <label>サイトアイコンURL（デフォルト: ./Obranex_logo.png）</label>
+            <input type="text" id="site-logo-input" placeholder="./Obranex_logo.png">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-danger" onclick="resetToDefaultData()" title="ブラウザの保存データを初期状態に戻します">初期化</button>
+            <div class="modal-actions-right">
+                <button class="action-btn" onclick="closeSiteModal()">キャンセル</button>
+                <button class="action-btn primary" onclick="saveSiteModal()">保存する</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast">✅ 保存しました</div>
+
+<script id="portal-data-script">
+// ▼ 初期データ（HTML書き出し時にここが最新の編集内容で自動更新されます）
+const DEFAULT_PORTAL_DATA = {
+    siteName: "Obranex",
+    siteSubtitle: "Personal Works Nexus",
+    siteLogo: "./Obranex_logo.png",
+    apps: [
+        {
+            name: "WSP-MTPR",
+            desc: "スマパメイントーナメントのPower Ranking＆シード作成システム。start.ggやSupermajor、スプレッドシートと連携し、ランキング集計やStation割り振りを自動化。",
+            tags: ["start.gg API", "GAS", "Supermajor"],
+            url: "https://tesnoo.github.io/WSP-MTPR/",
+            icon: "https://tesnoo.github.io/WSP-MTPR/sumapa_newlogo.png",
+            color: "#45a29e"
+        },
+        {
+            name: "WSP-CTPR",
+            desc: "派生トーナメント向けのPower Ranking＆シード管理システム。MTPRと共通の設計基盤を持つ姉妹ツール。",
+            tags: ["start.gg API", "GAS"],
+            url: "https://tesnoo.github.io/WSP-CTPR/",
+            icon: "https://tesnoo.github.io/WSP-CTPR/sumapa_newlogo.png",
+            color: "#38bdf8"
+        },
+        {
+            name: "FHSS",
+            desc: "Fly High!! Seeding System。東京のオフライン大会向けに、独自のアルゴリズムと大会Tier計算でシード順位・スコアを算出するシステム。",
+            tags: ["Seeding", "GAS", "start.gg API"],
+            url: "https://tesnoo.github.io/fhss/",
+            icon: "https://tesnoo.github.io/fhss/Flyhigh_logo.png",
+            color: "#FA8534"
+        },
+        {
+            name: "Bracket Printer",
+            desc: "start.ggのAPIやCSVデータから、オフライン大会用の進行トーナメント表・名簿（PDF / JPG）を高精度に自動生成する印刷支援ツール。",
+            tags: ["PDF / Print", "start.gg API", "Tournament"],
+            url: "https://tesnoo.github.io/BracketPrinter/",
+            icon: "https://raw.githubusercontent.com/Tesnoo/BracketPrinter/main/image/BracketPrinter_logo.png",
+            fallbackIcon: "https://tesnoo.github.io/BracketPrinter/image/BracketPrinter_logo.png",
+            color: "#DB2777"
+        },
+        {
+            name: "MuseDex",
+            desc: "Googleドライブやスプレッドシートと連携し、人物別アルバム・タグ絞り込み・R18ぼかし切り替え機能を備えたプライベートメディアギャラリー。",
+            tags: ["Gallery", "Google Drive", "GAS"],
+            url: "https://tesnoo.github.io/MuseDex/",
+            icon: "https://tesnoo.github.io/MuseDex/MuseDex_logo.png",
+            color: "#8b5cf6"
+        },
+        {
+            name: "Tronoches",
+            desc: "動画・マンガ・アニメ・音声作品（専用ASMRプレイヤー搭載）を一元管理し、シリーズ格納やタグ・キャスト絞り込みができる秘蔵メディアコレクション。",
+            tags: ["Private CMS", "Cloudflare R2", "Audio Player"],
+            url: "https://nsfw-phi.vercel.app/",
+            icon: "https://nsfw-phi.vercel.app/favicon.ico",
+            color: "#6366f1"
+        },
+        {
+            name: "My家計簿",
+            desc: "現金・電子マネー・チャージ・換金・借金の推移を日付順ソートで自動再計算し、CSVインポートにも対応した個人用家計簿アプリ。",
+            tags: ["Finance", "SPA", "GAS"],
+            url: "https://tesnoo.github.io/my-kakeibo/",
+            icon: "",
+            color: "#fd0083"
+        }
+    ]
+};
+</script>
+
+<script>
+const STORAGE_KEY = "obranex_portal_data_v1";
+// Obranex（O＋X Nexus）モチーフの内蔵SVGロゴ（画像未配置時のフォールバック用）
+const DEFAULT_SVG_LOGO = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c14'/><polygon points='50,8 88,28 88,72 50,92 12,72 12,28' fill='none' stroke='%23fd0083' stroke-width='6'/><circle cx='50' cy='50' r='26' fill='none' stroke='%2366fcf1' stroke-width='5'/><path d='M34 34 L66 66 M66 34 L34 66' stroke='%23fd0083' stroke-width='6' stroke-linecap='round'/><circle cx='50' cy='50' r='7' fill='%2366fcf1'/></svg>";
+
+let portalData = loadPortalData();
+let editingIndex = -1;
+
+function loadPortalData() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && Array.isArray(parsed.apps)) return parsed;
+        }
+    } catch (e) {}
+    return JSON.parse(JSON.stringify(DEFAULT_PORTAL_DATA));
+}
+
+function savePortalData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(portalData));
+    renderPortal();
+    showToast("✅ 保存しました");
+}
+
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+function escapeHtml(str) {
+    return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
+function handleIconError(imgEl, fallbackUrl, appName) {
+    if (fallbackUrl && imgEl.src !== fallbackUrl) {
+        imgEl.src = fallbackUrl;
+        return;
+    }
+    const initials = (appName || "?").slice(0, 2).toUpperCase();
+    imgEl.parentElement.innerHTML = `<div class="app-icon-fallback">${escapeHtml(initials)}</div>`;
+}
+
+function renderPortal() {
+    const siteName = portalData.siteName || "Obranex";
+    const siteSub = portalData.siteSubtitle || "";
+    const logoUrl = portalData.siteLogo || DEFAULT_SVG_LOGO;
+
+    document.getElementById("page-title").textContent = siteName;
+    document.getElementById("site-name-display").textContent = siteName;
+    document.getElementById("site-sub-display").textContent = siteSub;
+
+    const favicon = document.getElementById("page-favicon");
+    const logoImg = document.getElementById("site-logo-img");
+    logoImg.onload = () => { favicon.href = logoImg.src; };
+    logoImg.onerror = () => {
+        logoImg.src = DEFAULT_SVG_LOGO;
+        favicon.href = DEFAULT_SVG_LOGO;
+    };
+    logoImg.src = logoUrl;
+
+    const grid = document.getElementById("app-grid");
+    grid.innerHTML = "";
+
+    portalData.apps.forEach((app, idx) => {
+        const accent = app.color || "#fd0083";
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.setProperty("--card-accent", accent);
+
+        const initials = (app.name || "?").slice(0, 2).toUpperCase();
+        const iconHtml = app.icon
+            ? `<img src="${escapeHtml(app.icon)}" alt="${escapeHtml(app.name)}" onerror="handleIconError(this, '${escapeHtml(app.fallbackIcon || "")}', '${escapeHtml(app.name)}')">`
+            : `<div class="app-icon-fallback">${escapeHtml(initials)}</div>`;
+
+        const tagsHtml = (app.tags || [])
+            .filter(Boolean)
+            .map(t => `<span class="tag">${escapeHtml(t)}</span>`)
+            .join("");
+
+        card.innerHTML = `
+            <button class="edit-card-btn" onclick="openAppModal(${idx})" title="このアプリを編集">✏️</button>
+            <div class="card-header">
+                <div class="app-icon-wrap">${iconHtml}</div>
+                <h2>${escapeHtml(app.name)}</h2>
+            </div>
+            <div class="tags">${tagsHtml}</div>
+            <p>${escapeHtml(app.desc)}</p>
+            <a class="open-btn" href="${escapeHtml(app.url)}" target="_blank" rel="noopener noreferrer">開く</a>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function openAppModal(index) {
+    editingIndex = index;
+    const isNew = index === -1;
+    document.getElementById("app-modal-title").textContent = isNew ? "新しいアプリを追加" : "アプリ情報の編集";
+    document.getElementById("delete-app-btn").style.visibility = isNew ? "hidden" : "visible";
+
+    const app = isNew
+        ? { name: "", desc: "", tags: [], url: "https://", icon: "", color: "#fd0083" }
+        : portalData.apps[index];
+
+    document.getElementById("edit-name").value = app.name || "";
+    document.getElementById("edit-desc").value = app.desc || "";
+    document.getElementById("edit-tags").value = (app.tags || []).join(", ");
+    document.getElementById("edit-url").value = app.url || "";
+    document.getElementById("edit-icon").value = app.icon || "";
+    document.getElementById("edit-color").value = app.color || "#fd0083";
+    document.getElementById("edit-color-picker").value = app.color || "#fd0083";
+
+    document.getElementById("app-modal").classList.add("show");
+}
+
+function closeAppModal() {
+    document.getElementById("app-modal").classList.remove("show");
+}
+
+function saveAppModal() {
+    const name = document.getElementById("edit-name").value.trim() || "Untitled App";
+    const desc = document.getElementById("edit-desc").value.trim();
+    const tags = document.getElementById("edit-tags").value.split(",").map(s => s.trim()).filter(Boolean);
+    const url = document.getElementById("edit-url").value.trim() || "#";
+    const icon = document.getElementById("edit-icon").value.trim();
+    const color = document.getElementById("edit-color").value.trim() || "#fd0083";
+
+    const newItem = { name, desc, tags, url, icon, color };
+
+    if (editingIndex === -1) {
+        portalData.apps.push(newItem);
+    } else {
+        portalData.apps[editingIndex] = newItem;
+    }
+
+    closeAppModal();
+    savePortalData();
+}
+
+function deleteCurrentApp() {
+    if (editingIndex < 0) return;
+    const target = portalData.apps[editingIndex];
+    if (!confirm(`「${target.name}」をリストから削除しますか？`)) return;
+    portalData.apps.splice(editingIndex, 1);
+    closeAppModal();
+    savePortalData();
+}
+
+function openSiteModal() {
+    document.getElementById("site-name-input").value = portalData.siteName || "";
+    document.getElementById("site-sub-input").value = portalData.siteSubtitle || "";
+    document.getElementById("site-logo-input").value = portalData.siteLogo || "";
+    document.getElementById("site-modal").classList.add("show");
+}
+
+function closeSiteModal() {
+    document.getElementById("site-modal").classList.remove("show");
+}
+
+function saveSiteModal() {
+    portalData.siteName = document.getElementById("site-name-input").value.trim() || "Obranex";
+    portalData.siteSubtitle = document.getElementById("site-sub-input").value.trim();
+    portalData.siteLogo = document.getElementById("site-logo-input").value.trim();
+    closeSiteModal();
+    savePortalData();
+}
+
+function resetToDefaultData() {
+    if (!confirm("ブラウザ上の編集データを破棄し、コード内の初期データに戻しますか？")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    portalData = JSON.parse(JSON.stringify(DEFAULT_PORTAL_DATA));
+    closeSiteModal();
+    renderPortal();
+    showToast("🔄 初期状態に戻しました");
+}
+
+function exportUpdatedHtml() {
+    const jsonStr = JSON.stringify(portalData, null, 4);
+    const currentDoc = document.documentElement.outerHTML;
+    const updatedHtml = "<!DOCTYPE html>\n" + currentDoc.replace(
+        /<script id="portal-data-script">[\s\S]*?<\/script>/,
+        `<script id="portal-data-script">\n// ▼ 初期データ（HTML書き出し時にここが最新の編集内容で自動更新されます）\nconst DEFAULT_PORTAL_DATA = ${jsonStr};\n<\/script>`
+    );
+
+    const blob = new Blob([updatedHtml], { type: "text/html;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "original.html";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast("💾 最新版の original.html を書き出しました");
+}
+
+renderPortal();
+</script>
+
+</body>
+</html>
